@@ -27,8 +27,14 @@ func hashRawJson(jsonString []byte) (*string, error) {
 		return hashJsonDict(jsonString)
 	case "list":
 		return hashJsonList(jsonString)
+	case "bool":
+		return hashBoolVal(jsonString)
+	case "string":
+		return hashStringVal(jsonString)
+	case "float":
+		return hashFloatVal(jsonString)
 	default:
-		return hashBaseVal(jsonString)
+		return hashNil()
 	}
 }
 
@@ -49,12 +55,9 @@ func hashJsonDict(jsonString []byte) (*string, error) {
 		if err != nil {
 			return nil, err
 		}
-		khash, err := hashBaseVal([]byte(k))
-		if err != nil {
-			return nil, err
-		}
+		khash := hashString(k)
 		final := fmt.Sprintf("%s:::%s", *khash, *vhash)
-		hash, err := hashBaseVal([]byte(final))
+		hash := hashString(final)
 		if err != nil {
 			return nil, err
 		}
@@ -62,7 +65,7 @@ func hashJsonDict(jsonString []byte) (*string, error) {
 
 	}
 	combined := strings.Join(hashes, "|||")
-	return hashBaseVal([]byte(combined))
+	return hashString(combined), nil
 }
 
 func hashJsonList(jsonString []byte) (*string, error) {
@@ -84,14 +87,48 @@ func hashJsonList(jsonString []byte) (*string, error) {
 		hashes[i] = *h
 	}
 	combined := strings.Join(hashes, "|||")
-	return hashBaseVal([]byte(combined))
+	return hashString(combined), nil
 }
 
-func hashBaseVal(jsonString []byte) (*string, error) {
+func hashBoolVal(jsonString []byte) (*string, error) {
+	var v bool
+	err := json.Unmarshal(jsonString, &v)
+	if err != nil {
+		return nil, err
+	}
+	if v {
+		return hashString("$$$TRUE$$$"), nil
+	}
+	return hashString("$$$FALSE$$$"), nil
+}
+
+func hashFloatVal(jsonString []byte) (*string, error) {
+	var v float64
+	err := json.Unmarshal(jsonString, &v)
+	if err != nil {
+		return nil, err
+	}
+	return hashString(fmt.Sprintf("%f", v)), nil
+}
+
+func hashNil() (*string, error) {
+	return hashString("$$$NULL$$$"), nil
+}
+
+func hashStringVal(jsonString []byte) (*string, error) {
+	var v string
+	err := json.Unmarshal(jsonString, &v)
+	if err != nil {
+		return nil, err
+	}
+	return hashString(v), nil
+}
+
+func hashString(s string) *string {
 	hasher := sha256.New()
-	hasher.Write([]byte(jsonString))
+	hasher.Write([]byte(s))
 	sha := hex.EncodeToString(hasher.Sum(nil))
-	return &sha, nil
+	return &sha
 }
 
 func getAsKeyValPair(jsonString []byte) (map[string]json.RawMessage, error) {

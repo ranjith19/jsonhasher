@@ -50,6 +50,12 @@ var hashJsonTestCases = []hashJsonTestCase{
 		rhs:         `[1,2,3,4,5]`,
 		match:       true,
 	},
+	{
+		description: "lhs, rhs should match",
+		lhs:         `1.23e1`,
+		rhs:         `12.3`,
+		match:       true,
+	},
 }
 
 func TestHashJsonString(t *testing.T) {
@@ -97,6 +103,10 @@ var typeDetermineTestCases = []typeDetermineTestCase{
 	{
 		js:       `[{"haha": 111}]`,
 		expected: "list",
+	},
+	{
+		js:       `1.23e1`,
+		expected: "float",
 	},
 }
 
