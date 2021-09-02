@@ -5,7 +5,7 @@ This module generates consistent json sha256 hashes irrespective of key orders.
 I use this package in my projects to do the following
 
 1. Compare two different JSONs for equality
-2. Generate primary keys based on JSONs and retrieve later when those inputs come in
+2. Generate keys based on JSON values in key value stores. (for example caching API response combination of inputs.)
 
 
 ## Example Usage
