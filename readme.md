@@ -2,7 +2,7 @@
 
 This module generates consistent json sha256 hashes irrespective of key orders.
 
-Use cases
+Use cases:
 
 1. Compare two different JSONs for equality
 2. Generate keys based on JSON values in key value stores. (for example caching API response combination of inputs.)
