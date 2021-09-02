@@ -28,11 +28,11 @@ func hashRawJson(jsonString []byte) (*string, error) {
 	case "list":
 		return hashJsonList(jsonString)
 	case "bool":
-		return hashBoolVal(jsonString)
+		return hashJsonBool(jsonString)
 	case "string":
-		return hashStringVal(jsonString)
+		return hashJsonString(jsonString)
 	case "float":
-		return hashFloatVal(jsonString)
+		return hashJsonFloat(jsonString)
 	default:
 		return hashNil()
 	}
@@ -90,7 +90,7 @@ func hashJsonList(jsonString []byte) (*string, error) {
 	return hashString(combined), nil
 }
 
-func hashBoolVal(jsonString []byte) (*string, error) {
+func hashJsonBool(jsonString []byte) (*string, error) {
 	var v bool
 	err := json.Unmarshal(jsonString, &v)
 	if err != nil {
@@ -102,7 +102,7 @@ func hashBoolVal(jsonString []byte) (*string, error) {
 	return hashString("$$$FALSE$$$"), nil
 }
 
-func hashFloatVal(jsonString []byte) (*string, error) {
+func hashJsonFloat(jsonString []byte) (*string, error) {
 	var v float64
 	err := json.Unmarshal(jsonString, &v)
 	if err != nil {
@@ -115,7 +115,7 @@ func hashNil() (*string, error) {
 	return hashString("$$$NULL$$$"), nil
 }
 
-func hashStringVal(jsonString []byte) (*string, error) {
+func hashJsonString(jsonString []byte) (*string, error) {
 	var v string
 	err := json.Unmarshal(jsonString, &v)
 	if err != nil {
