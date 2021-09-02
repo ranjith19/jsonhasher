@@ -56,6 +56,13 @@ var hashJsonTestCases = []hashJsonTestCase{
 		rhs:         `12.3`,
 		match:       true,
 	},
+
+	{
+		description: "lhs, rhs should match",
+		lhs:         "{ \"foo\": 1.23e1, \"bar\": { \"baz\": true, \"abc\": 12 } }",
+		rhs:         "{ \"bar\": { \"abc\": 12, \"baz\": true }, \"foo\": 12.3 }",
+		match:       true,
+	},
 }
 
 func TestHashJsonString(t *testing.T) {
