@@ -41,3 +41,12 @@ Will output
 ```
 
 Irrespective of formatting on the JSON or the order of the keys, the hash will be consistent.
+
+
+## testing
+
+```
+go test
+go test -covermode=count -coverprofile=coverage.out
+go tool cover -html=coverage.out
+```
