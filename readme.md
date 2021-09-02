@@ -10,6 +10,8 @@ Can be useful to
 
 ## Example Usage
 
+Try this at [go playground](https://play.golang.org/p/awmKpeeeqvS)
+
 ```go
 package main
 
