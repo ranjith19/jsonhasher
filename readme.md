@@ -1,11 +1,11 @@
-# Consistent JSON Hasher
+# Consistent JSON Hasher in go
 
 This module generates consistent json sha256 hashes irrespective of key orders.
 
 I use this package in my projects to do the following
 
-1. Compare two different JSONs
-2. Generate primary keys based on JSONs and retrieve later
+1. Compare two different JSONs for equality
+2. Generate primary keys based on JSONs and retrieve later when those inputs come in
 
 
 ## Example Usage
