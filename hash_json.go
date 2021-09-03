@@ -10,11 +10,7 @@ import (
 )
 
 func HashJsonString(jsonString string) (*string, error) {
-	h, err := hashRawJson([]byte(jsonString))
-	if err != nil {
-		return nil, err
-	}
-	return h, nil
+	return hashRawJson([]byte(jsonString))
 }
 
 func hashRawJson(jsonString []byte) (*string, error) {

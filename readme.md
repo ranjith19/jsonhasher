@@ -10,7 +10,7 @@ Use cases:
 
 ## Example Usage
 
-Try this at [go playground](https://play.golang.org/p/awmKpeeeqvS)
+
 
 ```go
 package main
@@ -41,6 +41,8 @@ Will output
 ```
 
 Irrespective of formatting on the JSON or the order of the keys, the hash will be consistent.
+
+Try this at [go playground](https://play.golang.org/p/awmKpeeeqvS). Another example [here](https://play.golang.org/p/Av9jvDo5xap)
 
 
 ## testing
