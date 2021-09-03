@@ -1,183 +1,71 @@
 package jsonhasher
 
 import (
+	"crypto/sha1"
 	"crypto/sha256"
+	"crypto/sha512"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
-	"sort"
-	"strings"
+)
+
+const (
+	sha_1   = iota
+	sha_256 = iota
+	sha_512 = iota
 )
 
 func HashJsonString(jsonString string) (*string, error) {
-	return hashRawJson([]byte(jsonString))
+	return hashJsonString(jsonString, sha_256)
 }
 
-func hashRawJson(jsonString []byte) (*string, error) {
-	jtype, err := determineType(jsonString)
+func HashJsonStringSha1(jsonString string) (*string, error) {
+	return hashJsonString(jsonString, sha_1)
+}
+
+func HashJsonStringSha256(jsonString string) (*string, error) {
+	return hashJsonString(jsonString, sha_256)
+}
+
+func HashJsonStringSha512(jsonString string) (*string, error) {
+	return hashJsonString(jsonString, sha_512)
+}
+
+func hashJsonString(jsonString string, shaType uint) (*string, error) {
+	var v interface{}
+	err := json.Unmarshal([]byte(jsonString), &v)
 	if err != nil {
 		return nil, err
 	}
-	switch *jtype {
-	case "dict":
-		return hashJsonDict(jsonString)
-	case "list":
-		return hashJsonList(jsonString)
-	case "bool":
-		return hashJsonBool(jsonString)
-	case "string":
-		return hashJsonString(jsonString)
-	case "float":
-		return hashJsonFloat(jsonString)
+	cdoc, _ := json.Marshal(v)
+	switch shaType {
+	case sha_1:
+		return createSha1(cdoc), nil
+	case sha_256:
+		return createSha256(cdoc), nil
+	case sha_512:
+		return createSha512(cdoc), nil
 	default:
-		return hashNil()
+		return createSha256(cdoc), nil
 	}
 }
 
-func hashJsonDict(jsonString []byte) (*string, error) {
-
-	// unmarshal as key val pairs
-	kv, err := getAsKeyValPair(jsonString)
-	if err != nil {
-		return nil, err
-	}
-	// get sorted keys
-	keys := lisSortedtKeys(&kv)
-	// make a list of hashes
-	hashes := make([]string, len(keys))
-	for _, k := range keys {
-		v := kv[k]
-		b, err := v.MarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		vhash, err := hashRawJson(b) // has value
-		if err != nil {
-			return nil, err
-		}
-		khash := hashString(k)                          //hash key
-		final := fmt.Sprintf("%s:::%s", *khash, *vhash) // join key hash with value hash
-		hash := hashString(final)                       // append to list
-		if err != nil {
-			return nil, err
-		}
-		hashes = append(hashes, *hash)
-
-	}
-	// join the slice and hash the result
-	combined := strings.Join(hashes, "|||")
-	return hashString(combined), nil
-}
-
-func hashJsonList(jsonString []byte) (*string, error) {
-	// make a slice of hashes
-
-	parsed := make([]json.RawMessage, 0)
-	e := json.Unmarshal(jsonString, &parsed)
-	if e != nil {
-		return nil, e
-	}
-	hashes := make([]string, len(parsed))
-	for i, v := range parsed {
-		b, err := v.MarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		h, err := hashRawJson(b)
-		if err != nil {
-			return nil, err
-		}
-		hashes[i] = *h
-	}
-	//join the slice and hash the result
-	combined := strings.Join(hashes, "|||")
-	return hashString(combined), nil
-}
-
-func hashJsonBool(jsonString []byte) (*string, error) {
-	var v bool
-	err := json.Unmarshal(jsonString, &v)
-	if err != nil {
-		return nil, err
-	}
-	if v {
-		return hashString("$$$TRUE$$$"), nil
-	}
-	return hashString("$$$FALSE$$$"), nil
-}
-
-func hashJsonFloat(jsonString []byte) (*string, error) {
-	var v float64
-	err := json.Unmarshal(jsonString, &v)
-	if err != nil {
-		return nil, err
-	}
-	return hashString(fmt.Sprintf("%f", v)), nil
-}
-
-func hashNil() (*string, error) {
-	return hashString("$$$NULL$$$"), nil
-}
-
-func hashJsonString(jsonString []byte) (*string, error) {
-	var v string
-	err := json.Unmarshal(jsonString, &v)
-	if err != nil {
-		return nil, err
-	}
-	return hashString(v), nil
-}
-
-func hashString(s string) *string {
-	hasher := sha256.New()
-	hasher.Write([]byte(s))
+func createSha1(b []byte) *string {
+	hasher := sha1.New()
+	hasher.Write(b)
 	sha := hex.EncodeToString(hasher.Sum(nil))
 	return &sha
 }
 
-func getAsKeyValPair(jsonString []byte) (map[string]json.RawMessage, error) {
-	c := make(map[string]json.RawMessage)
-	e := json.Unmarshal(jsonString, &c)
-	if e != nil {
-		return nil, e
-	}
-
-	return c, nil
+func createSha256(b []byte) *string {
+	hasher := sha256.New()
+	hasher.Write(b)
+	sha := hex.EncodeToString(hasher.Sum(nil))
+	return &sha
 }
 
-func lisSortedtKeys(c *map[string]json.RawMessage) []string {
-
-	// a string slice to hold the keys
-	k := make([]string, 0)
-
-	// copy c's keys into k
-	for s, _ := range *c {
-		k = append(k, s)
-	}
-	sort.Strings(k)
-	return k
-}
-
-func determineType(jsonString []byte) (*string, error) {
-	var v interface{}
-	err := json.Unmarshal(jsonString, &v)
-	if err != nil {
-		return nil, err
-	}
-	determinedType := "nil"
-	switch v.(type) {
-	case map[string]interface{}:
-		determinedType = "dict"
-	case []interface{}:
-		determinedType = "list"
-	case bool:
-		determinedType = "bool"
-	case float64:
-		determinedType = "float"
-	case string:
-		determinedType = "string"
-	default:
-		determinedType = "nil"
-	}
-	return &determinedType, err
+func createSha512(b []byte) *string {
+	hasher := sha512.New()
+	hasher.Write(b)
+	sha := hex.EncodeToString(hasher.Sum(nil))
+	return &sha
 }
