@@ -76,6 +76,27 @@ func TestHashJsonString(t *testing.T) {
 			} else {
 				require.NotEqual(t, lhsHash, rhsHash)
 			}
+
+			lhsHash, err = HashJsonStringSha1(tc.lhs)
+			require.Nil(t, err)
+			rhsHash, err = HashJsonStringSha1(tc.rhs)
+			require.Nil(t, err)
+			if tc.match {
+				require.Equal(t, lhsHash, rhsHash)
+			} else {
+				require.NotEqual(t, lhsHash, rhsHash)
+			}
+
+			lhsHash, err = HashJsonStringSha512(tc.lhs)
+			require.Nil(t, err)
+			rhsHash, err = HashJsonStringSha512(tc.rhs)
+			require.Nil(t, err)
+			if tc.match {
+				require.Equal(t, lhsHash, rhsHash)
+			} else {
+				require.NotEqual(t, lhsHash, rhsHash)
+			}
+
 		})
 	}
 }
