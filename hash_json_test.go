@@ -97,6 +97,88 @@ func TestHashJsonString(t *testing.T) {
 				require.NotEqual(t, lhsHash, rhsHash)
 			}
 
+			h1, _ := HashJsonStringSha1(tc.lhs)
+			h2, _ := HashJsonStringSha256(tc.lhs)
+			h3, _ := HashJsonStringSha512(tc.rhs)
+			require.NotEqual(t, h1, h2)
+			require.NotEqual(t, h1, h3)
+			require.NotEqual(t, h2, h3)
+		})
+	}
+}
+
+type hashInterfaceTestCase struct {
+	description string
+	lhs         interface{}
+	rhs         interface{}
+	match       bool
+}
+
+type dummyStruct struct {
+	X string
+	Y bool
+	Z float64
+	i int
+}
+
+var hashInterfaceTestCases = []hashInterfaceTestCase{
+	{
+		description: "lhs, rhs should match",
+		lhs:         dummyStruct{"A", false, 10.1, 1},
+		rhs:         dummyStruct{"A", false, 10.1, 0},
+		match:       true,
+	},
+}
+
+func TestHashInterface(t *testing.T) {
+	for _, tc := range hashInterfaceTestCases {
+		t.Run(tc.description, func(t *testing.T) {
+			lhsHash, err := HashInterface(tc.lhs)
+			require.Nil(t, err)
+			rhsHash, err := HashInterface(tc.rhs)
+			require.Nil(t, err)
+			if tc.match {
+				require.Equal(t, lhsHash, rhsHash)
+			} else {
+				require.NotEqual(t, lhsHash, rhsHash)
+			}
+
+			lhsHash, err = HashInterfaceSha1(tc.lhs)
+			require.Nil(t, err)
+			rhsHash, err = HashInterfaceSha1(tc.rhs)
+			require.Nil(t, err)
+			if tc.match {
+				require.Equal(t, lhsHash, rhsHash)
+			} else {
+				require.NotEqual(t, lhsHash, rhsHash)
+			}
+
+			lhsHash, err = HashInterfaceSha256(tc.lhs)
+			require.Nil(t, err)
+			rhsHash, err = HashInterfaceSha256(tc.rhs)
+			require.Nil(t, err)
+			if tc.match {
+				require.Equal(t, lhsHash, rhsHash)
+			} else {
+				require.NotEqual(t, lhsHash, rhsHash)
+			}
+
+			lhsHash, err = HashInterfaceSha512(tc.lhs)
+			require.Nil(t, err)
+			rhsHash, err = HashInterfaceSha512(tc.rhs)
+			require.Nil(t, err)
+			if tc.match {
+				require.Equal(t, lhsHash, rhsHash)
+			} else {
+				require.NotEqual(t, lhsHash, rhsHash)
+			}
+
+			h1, _ := HashInterfaceSha1(tc.lhs)
+			h2, _ := HashInterfaceSha256(tc.lhs)
+			h3, _ := HashInterfaceSha512(tc.rhs)
+			require.NotEqual(t, h1, h2)
+			require.NotEqual(t, h1, h3)
+			require.NotEqual(t, h2, h3)
 		})
 	}
 }

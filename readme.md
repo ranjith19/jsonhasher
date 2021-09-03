@@ -49,10 +49,21 @@ Try this at [go playground](https://play.golang.org/p/awmKpeeeqvS). Another exam
 
 You can use `HashJsonStringSha1` or `HashJsonStringSha512` methods.
 
+## Hashing structs
+
+You can use `HashInterface` method to hash using *exported* attributes of the struct
+
 ## testing
+
+Run tests by
 
 ```
 go test
-go test -covermode=count -coverprofile=coverage.out
-go tool cover -html=coverage.out
 ```
+
+Run coverage
+
+```
+go test -covermode=count -coverprofile=coverage.out; go tool cover -html=coverage.out;
+```
+

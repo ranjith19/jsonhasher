@@ -14,8 +14,25 @@ const (
 	sha_512
 )
 
+// This method will hash an interface based on exported attributes
+func HashInterface(v interface{}) (*string, error) {
+	return hashInterface(v, sha_256)
+}
+
 func HashJsonString(jsonString string) (*string, error) {
 	return hashJsonString(jsonString, sha_256)
+}
+
+func HashInterfaceSha1(v interface{}) (*string, error) {
+	return hashInterface(v, sha_1)
+}
+
+func HashInterfaceSha256(v interface{}) (*string, error) {
+	return hashInterface(v, sha_256)
+}
+
+func HashInterfaceSha512(v interface{}) (*string, error) {
+	return hashInterface(v, sha_512)
 }
 
 func HashJsonStringSha1(jsonString string) (*string, error) {
@@ -36,6 +53,10 @@ func hashJsonString(jsonString string, shaType uint) (*string, error) {
 	if err != nil {
 		return nil, err
 	}
+	return hashInterface(v, shaType)
+}
+
+func hashInterface(v interface{}, shaType uint) (*string, error) {
 	cdoc, _ := json.Marshal(v)
 	switch shaType {
 	case sha_1:
