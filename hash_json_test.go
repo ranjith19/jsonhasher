@@ -16,8 +16,8 @@ type hashJsonTestCase struct {
 var hashJsonTestCases = []hashJsonTestCase{
 	{
 		description: "lhs, rhs should match",
-		lhs:         `{"x": "a", "y": "b"}`,
-		rhs:         `{"y": "b", "x": "a"}`,
+		lhs:         `{"x": "a", "y": "b", "z": null}`,
+		rhs:         `{"y": "b", "z": null,   "x": "a"}`,
 		match:       true,
 	},
 	{
@@ -56,7 +56,6 @@ var hashJsonTestCases = []hashJsonTestCase{
 		rhs:         `12.3`,
 		match:       true,
 	},
-
 	{
 		description: "lhs, rhs should match",
 		lhs:         "{ \"foo\": 1.23e1, \"bar\": { \"baz\": true, \"abc\": 12 } }",

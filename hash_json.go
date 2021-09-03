@@ -35,11 +35,15 @@ func hashRawJson(jsonString []byte) (*string, error) {
 }
 
 func hashJsonDict(jsonString []byte) (*string, error) {
+
+	// unmarshal as key val pairs
 	kv, err := getAsKeyValPair(jsonString)
 	if err != nil {
 		return nil, err
 	}
+	// get sorted keys
 	keys := lisSortedtKeys(&kv)
+	// make a list of hashes
 	hashes := make([]string, len(keys))
 	for _, k := range keys {
 		v := kv[k]
@@ -47,24 +51,27 @@ func hashJsonDict(jsonString []byte) (*string, error) {
 		if err != nil {
 			return nil, err
 		}
-		vhash, err := hashRawJson(b)
+		vhash, err := hashRawJson(b) // has value
 		if err != nil {
 			return nil, err
 		}
-		khash := hashString(k)
-		final := fmt.Sprintf("%s:::%s", *khash, *vhash)
-		hash := hashString(final)
+		khash := hashString(k)                          //hash key
+		final := fmt.Sprintf("%s:::%s", *khash, *vhash) // join key hash with value hash
+		hash := hashString(final)                       // append to list
 		if err != nil {
 			return nil, err
 		}
 		hashes = append(hashes, *hash)
 
 	}
+	// join the slice and hash the result
 	combined := strings.Join(hashes, "|||")
 	return hashString(combined), nil
 }
 
 func hashJsonList(jsonString []byte) (*string, error) {
+	// make a slice of hashes
+
 	parsed := make([]json.RawMessage, 0)
 	e := json.Unmarshal(jsonString, &parsed)
 	if e != nil {
@@ -82,6 +89,7 @@ func hashJsonList(jsonString []byte) (*string, error) {
 		}
 		hashes[i] = *h
 	}
+	//join the slice and hash the result
 	combined := strings.Join(hashes, "|||")
 	return hashString(combined), nil
 }
@@ -129,11 +137,7 @@ func hashString(s string) *string {
 
 func getAsKeyValPair(jsonString []byte) (map[string]json.RawMessage, error) {
 	c := make(map[string]json.RawMessage)
-
-	// unmarschal JSON
 	e := json.Unmarshal(jsonString, &c)
-
-	// panic on error
 	if e != nil {
 		return nil, e
 	}
