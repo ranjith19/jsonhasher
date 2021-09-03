@@ -76,52 +76,27 @@ func TestHashJsonString(t *testing.T) {
 			} else {
 				require.NotEqual(t, lhsHash, rhsHash)
 			}
-		})
-	}
-}
 
-type typeDetermineTestCase struct {
-	js       string
-	expected string
-}
-
-var typeDetermineTestCases = []typeDetermineTestCase{
-	{
-		js:       "null",
-		expected: "nil",
-	},
-	{
-		js:       `"haha"`,
-		expected: "string",
-	},
-	{
-		js:       `11`,
-		expected: "float",
-	},
-	{
-		js:       `11.0`,
-		expected: "float",
-	},
-	{
-		js:       `{"haha": 111}`,
-		expected: "dict",
-	},
-	{
-		js:       `[{"haha": 111}]`,
-		expected: "list",
-	},
-	{
-		js:       `1.23e1`,
-		expected: "float",
-	},
-}
-
-func TestTypeCheck(t *testing.T) {
-	for _, tc := range typeDetermineTestCases {
-		t.Run(tc.expected, func(t *testing.T) {
-			determined, err := determineType([]byte(tc.js))
+			lhsHash, err = HashJsonStringSha1(tc.lhs)
 			require.Nil(t, err)
-			require.Equal(t, tc.expected, *determined)
+			rhsHash, err = HashJsonStringSha1(tc.rhs)
+			require.Nil(t, err)
+			if tc.match {
+				require.Equal(t, lhsHash, rhsHash)
+			} else {
+				require.NotEqual(t, lhsHash, rhsHash)
+			}
+
+			lhsHash, err = HashJsonStringSha512(tc.lhs)
+			require.Nil(t, err)
+			rhsHash, err = HashJsonStringSha512(tc.rhs)
+			require.Nil(t, err)
+			if tc.match {
+				require.Equal(t, lhsHash, rhsHash)
+			} else {
+				require.NotEqual(t, lhsHash, rhsHash)
+			}
+
 		})
 	}
 }

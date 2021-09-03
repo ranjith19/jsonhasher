@@ -45,6 +45,10 @@ Irrespective of formatting on the JSON or the order of the keys, the hash will b
 Try this at [go playground](https://play.golang.org/p/awmKpeeeqvS). Another example [here](https://play.golang.org/p/Av9jvDo5xap)
 
 
+## Longer/Shorter hashes
+
+You can use `HashJsonStringSha1` or `HashJsonStringSha512` methods.
+
 ## testing
 
 ```
