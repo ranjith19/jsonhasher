@@ -51,7 +51,7 @@ You can use `HashJsonStringSha1` or `HashJsonStringSha512` methods.
 
 ## Hashing structs
 
-You can use `HashInterface` method to hash using **exported** fields of the struct. Example (here)[https://play.golang.org/p/5O1eHWP7E1L]
+You can use `HashInterface` method to hash using **exported** fields of the struct. Example [here](https://play.golang.org/p/5O1eHWP7E1L)
 
 ## testing
 
