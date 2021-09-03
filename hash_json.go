@@ -9,9 +9,9 @@ import (
 )
 
 const (
-	sha_1   = iota
-	sha_256 = iota
-	sha_512 = iota
+	sha_1 = iota
+	sha_256
+	sha_512
 )
 
 func HashJsonString(jsonString string) (*string, error) {
