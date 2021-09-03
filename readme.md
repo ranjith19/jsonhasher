@@ -36,8 +36,8 @@ func main() {
 Will output
 
 ```txt
-4af2b0287001172868b69c6d7531661e6f0d6ec0f4f506876c387d0b4b7ecbdf
-4af2b0287001172868b69c6d7531661e6f0d6ec0f4f506876c387d0b4b7ecbdf
+e8a8a051f649f3313bf6a02d3d117783ea53da1c6a7e7611b9d2a224496ed80b
+e8a8a051f649f3313bf6a02d3d117783ea53da1c6a7e7611b9d2a224496ed80b
 ```
 
 Irrespective of formatting on the JSON or the order of the keys, the hash will be consistent.
